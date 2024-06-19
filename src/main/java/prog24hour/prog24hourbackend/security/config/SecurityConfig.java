@@ -1,0 +1,156 @@
+package prog24hour.prog24hourbackend.security.config;
+
+import saxxen.security.error.CustomOAuth2AccessDeniedHandler;
+import saxxen.security.error.CustomOAuth2AuthenticationEntryPoint;
+import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
+@EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
+
+@Configuration
+public class SecurityConfig {
+
+  @Value("${app.secret-key}")
+  private String tokenSecret;
+
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
+    MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
+    http
+            .cors(Customizer.withDefaults()) //Will use the CorsConfigurationSource bean declared in CorsConfig.java
+            .csrf(csrf -> csrf.disable())  //We can disable csrf, since we are using token based authentication, not cookie based
+            .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .oauth2ResourceServer((oauth2ResourceServer) ->
+                              oauth2ResourceServer
+                                      .jwt((jwt) -> jwt.decoder(jwtDecoder())
+                                              .jwtAuthenticationConverter(authenticationConverter())
+                                      )
+                                      .authenticationEntryPoint(new CustomOAuth2AuthenticationEntryPoint())
+                                      .accessDeniedHandler(new CustomOAuth2AccessDeniedHandler()));
+    http.authorizeHttpRequests((authorize) -> authorize
+
+            //add for password token
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/password/token")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/password/change")).permitAll()
+
+            // add for available dates
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/season-dates")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/season-dates")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/season-dates/opening-dates")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/season-dates/booking-dates")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/season-dates/{id}")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/season-dates/{id}/add")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/season-dates/{id}/remove/{date}")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/season-dates/{id}")).hasAuthority("ADMIN")
+
+            // add for users
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/auth/login")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/user")).hasAuthority("ADMIN")// Only admins can create a user
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/recaptcha/verify")).permitAll()
+
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/user")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/user/{id}")).hasAuthority("ADMIN")
+
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/user/{id}")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/user/add-role/{email}/{role}")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/user/remove-role/{email}/{role}")).hasAuthority("ADMIN")
+
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/user/{email}")).hasAuthority("ADMIN") // Only admins can delete a user by email
+
+            // add for bookings
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/booking")).permitAll() // anyone can create a booking
+
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/booking")).hasAnyAuthority("ADMIN", "MANAGER") // Only admins and managers can get all bookings
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/booking/{id}")).authenticated()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/booking/resident/{email}")).authenticated()
+
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/booking/{id}")).authenticated()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/booking/{id}/cancel")).authenticated()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/booking/{id}/uncancel")).authenticated()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/booking/{id}/accept")).hasAnyAuthority("ADMIN", "MANAGER")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/booking/{id}/key/{action}")).hasAnyAuthority("ADMIN", "MANAGER")
+
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/booking/{id}")).hasAnyAuthority("ADMIN", "MANAGER")
+
+            // add for residents
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/resident/{email}")).hasAuthority("ADMIN") // Only admins can delete bookings by resident email
+
+            //testController call
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/test/scheduledTask")).hasAuthority("ADMIN")
+            //TestEmailController
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/send-email")).hasAuthority("ADMIN")
+            //Allow index.html for anonymous users
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/index.html")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/")).permitAll()
+
+            //Allow for swagger-ui
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/swagger-ui/**")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/swagger-resources/**")).permitAll()
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/v3/api-docs/**")).permitAll()
+
+
+            //Required for error responses
+            .requestMatchers(mvcMatcherBuilder.pattern("/error")).permitAll()
+
+            //Use this to completely disable security (Will not work if endpoints has been marked with @PreAuthorize)
+//            .requestMatchers(mvcMatcherBuilder.pattern("/**")).permitAll());
+
+            .anyRequest().authenticated());
+
+
+    return http.build();
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+//
+  @Bean
+  public JwtAuthenticationConverter authenticationConverter() {
+    JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+    jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
+    jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+    JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+    return jwtAuthenticationConverter;
+  }
+
+  public SecretKey secretKey() {
+    return new SecretKeySpec(tokenSecret.getBytes(), "HmacSHA256");
+  }
+
+  @Bean
+  public JwtDecoder jwtDecoder() {
+    return NimbusJwtDecoder.withSecretKey(secretKey()).build();
+  }
+
+  @Bean
+  public JwtEncoder jwtEncoder() {
+    return new NimbusJwtEncoder(new ImmutableSecret<>(secretKey()));
+  }
+
+}
