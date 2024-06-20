@@ -1,7 +1,5 @@
 package prog24hour.prog24hourbackend.security.config;
 
-import saxxen.security.error.CustomOAuth2AccessDeniedHandler;
-import saxxen.security.error.CustomOAuth2AuthenticationEntryPoint;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +21,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+import prog24hour.prog24hourbackend.security.error.CustomOAuth2AccessDeniedHandler;
+import prog24hour.prog24hourbackend.security.error.CustomOAuth2AuthenticationEntryPoint;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -56,16 +56,6 @@ public class SecurityConfig {
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/password/token")).permitAll()
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/password/change")).permitAll()
 
-            // add for available dates
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/season-dates")).hasAuthority("ADMIN")
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/season-dates")).permitAll()
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/season-dates/opening-dates")).permitAll()
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/season-dates/booking-dates")).permitAll()
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/season-dates/{id}")).hasAuthority("ADMIN")
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/season-dates/{id}/add")).hasAuthority("ADMIN")
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/season-dates/{id}/remove/{date}")).hasAuthority("ADMIN")
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/season-dates/{id}")).hasAuthority("ADMIN")
-
             // add for users
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/auth/login")).permitAll()
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/user")).hasAuthority("ADMIN")// Only admins can create a user
@@ -80,28 +70,6 @@ public class SecurityConfig {
 
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/user/{email}")).hasAuthority("ADMIN") // Only admins can delete a user by email
 
-            // add for bookings
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/booking")).permitAll() // anyone can create a booking
-
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/booking")).hasAnyAuthority("ADMIN", "MANAGER") // Only admins and managers can get all bookings
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/booking/{id}")).authenticated()
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/booking/resident/{email}")).authenticated()
-
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/booking/{id}")).authenticated()
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/booking/{id}/cancel")).authenticated()
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/booking/{id}/uncancel")).authenticated()
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/booking/{id}/accept")).hasAnyAuthority("ADMIN", "MANAGER")
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/booking/{id}/key/{action}")).hasAnyAuthority("ADMIN", "MANAGER")
-
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/booking/{id}")).hasAnyAuthority("ADMIN", "MANAGER")
-
-            // add for residents
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/resident/{email}")).hasAuthority("ADMIN") // Only admins can delete bookings by resident email
-
-            //testController call
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/test/scheduledTask")).hasAuthority("ADMIN")
-            //TestEmailController
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/send-email")).hasAuthority("ADMIN")
             //Allow index.html for anonymous users
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/index.html")).permitAll()
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/")).permitAll()
@@ -116,7 +84,7 @@ public class SecurityConfig {
             .requestMatchers(mvcMatcherBuilder.pattern("/error")).permitAll()
 
             //Use this to completely disable security (Will not work if endpoints has been marked with @PreAuthorize)
-//            .requestMatchers(mvcMatcherBuilder.pattern("/**")).permitAll());
+//              .requestMatchers(mvcMatcherBuilder.pattern("/**")).permitAll());
 
             .anyRequest().authenticated());
 

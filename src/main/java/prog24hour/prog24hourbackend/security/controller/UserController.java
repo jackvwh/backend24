@@ -1,9 +1,9 @@
 package prog24hour.prog24hourbackend.security.controller;
 
 import org.springframework.http.ResponseEntity;
-import saxxen.security.dto.UserRequest;
-import saxxen.security.dto.UserResponse;
-import saxxen.security.service.UserService;
+import prog24hour.prog24hourbackend.security.dto.UserRequest;
+import prog24hour.prog24hourbackend.security.dto.UserResponse;
+import prog24hour.prog24hourbackend.security.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

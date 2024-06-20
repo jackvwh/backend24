@@ -1,7 +1,7 @@
 package prog24hour.prog24hourbackend.security.service;
 
-import saxxen.security.entity.User;
-import saxxen.security.repository.UserRepository;
+import prog24hour.prog24hourbackend.security.entity.User;
+import prog24hour.prog24hourbackend.security.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,16 +1,17 @@
 package prog24hour.prog24hourbackend.security.entity;
 
-import saxxen.dtubar.entity.BaseEntity;
-import saxxen.dtubar.entity.Resident;
+import prog24hour.prog24hourbackend.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import prog24hour.prog24hourbackend.entity.GenderType;
+import prog24hour.prog24hourbackend.entity.Participant;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -25,18 +26,27 @@ public class User extends BaseEntity implements UserDetails{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String firstName;
+    private String lastName;
+    private LocalDate birthDate;
+    private String email;
+    private String phone;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "gender_type_id", referencedColumnName = "id")
+    private GenderType gender;
+
     //60 = length of a bcrypt encoded password
     @Column(nullable = false, length = 60)
-    @NotBlank(message = "Password is required")
+//    @NotBlank(message = "Password is required")
     @JsonIgnore
     private String password;
 
     @OneToOne
-    @JoinColumn(name = "resident_id", referencedColumnName = "id")
-    private Resident resident;
-
-    @OneToOne(mappedBy = "user")
-    private PasswordResetToken passwordResetToken;
+    @JoinTable(name = "user_participant",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "participant_id", referencedColumnName = "id"))
+    private Participant participant;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
@@ -69,7 +79,7 @@ public class User extends BaseEntity implements UserDetails{
 
     @Override
     public String getUsername() {
-        return this.getResident().getEmail();
+        return this.getEmail();
     }
 
     @Override
@@ -104,5 +114,4 @@ public class User extends BaseEntity implements UserDetails{
         User other = (User) obj;
         return Objects.equals(id, other.id);
     }
-
 }

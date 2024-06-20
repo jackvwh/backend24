@@ -1,11 +1,5 @@
 package prog24hour.prog24hourbackend.security.controller;
 
-import saxxen.security.dto.LoginRequest;
-import saxxen.security.dto.LoginResponse;
-
-import saxxen.security.entity.Role;
-import saxxen.security.entity.User;
-import saxxen.security.service.UserDetailsServiceImp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -26,6 +20,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import prog24hour.prog24hourbackend.security.dto.LoginRequest;
+import prog24hour.prog24hourbackend.security.dto.LoginResponse;
+import prog24hour.prog24hourbackend.security.entity.Role;
+import prog24hour.prog24hourbackend.security.entity.User;
+import prog24hour.prog24hourbackend.security.service.UserDetailsServiceImp;
 
 import java.time.Instant;
 import java.util.List;
@@ -72,14 +71,14 @@ public class AuthenticationController {
               .issuer(tokenIssuer)  //Only this for simplicity
               .issuedAt(now)
               .expiresAt(now.plusSeconds(tokenExpiration))
-              .subject(user.getResident().getEmail())
+              .subject(user.getUsername())
               .claim("roles", scope)
               .build();
       JwsHeader jwsHeader = JwsHeader.with(() -> "HS256").build();
       String token = encoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
       List<String> roles = user.getRoles().stream().map(Role::getRoleName).toList();
       return ResponseEntity.ok()
-              .body(new LoginResponse(user.getResident().getEmail(), token, roles));
+              .body(new LoginResponse(user.getUsername(), token, roles));
 
     } catch (BadCredentialsException | AuthenticationServiceException e) {
       // AuthenticationServiceException is thrown if the user is not found
