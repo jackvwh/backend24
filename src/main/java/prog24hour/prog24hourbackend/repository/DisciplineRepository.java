@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import prog24hour.prog24hourbackend.entity.Discipline;
 
 @Repository
-public interface DisciplinRepository extends JpaRepository<Discipline, Integer> {
+public interface DisciplineRepository extends JpaRepository<Discipline, Integer> {
 }

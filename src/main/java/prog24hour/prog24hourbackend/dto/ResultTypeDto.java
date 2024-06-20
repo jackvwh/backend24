@@ -11,5 +11,5 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResultTypeDto implements Serializable {
     private Integer id;
-    private String unit;
+    private String name;
 }

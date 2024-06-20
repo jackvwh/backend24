@@ -8,8 +8,6 @@ import prog24hour.prog24hourbackend.security.entity.Role;
 import prog24hour.prog24hourbackend.security.entity.User;
 import prog24hour.prog24hourbackend.security.repository.RoleRepository;
 import prog24hour.prog24hourbackend.security.repository.UserRepository;
-
-
 import java.util.NoSuchElementException;
 
 @Component
@@ -46,13 +44,11 @@ public class SetupDevUsers implements ApplicationRunner {
         System.out.println();
         System.out.println("******************************************************************************");
 
-        // Create dummy user
-        User adminResident = new User();
-        adminResident.setEmail("john.doe@example.com");
-
         // Create admin user
         User admin = new User();
         admin.setPassword(passwordEncoder.encode("test12"));
+        admin.setEmail("john.doe@example.com");
         admin.addRole(roleAdmin);
+        userRepository.save(admin);
     }
 }

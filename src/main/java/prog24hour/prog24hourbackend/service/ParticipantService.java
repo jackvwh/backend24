@@ -22,13 +22,13 @@ public class ParticipantService {
     private final GenderTypeRepository genderTypeRepository;
     private final ClubRepository clubRepository;
     private final AgeGroupRepository ageGroupRepository;
-    private final DisciplinRepository disciplinRepository;
+    private final DisciplineRepository disciplineRepository;
 
-    public ParticipantService(ParticipantRepository participantRepository, GenderTypeRepository genderTypeRepository, ClubRepository clubRepository, DisciplinRepository disciplinRepository, AgeGroupRepository ageGroupRepository) {
+    public ParticipantService(ParticipantRepository participantRepository, GenderTypeRepository genderTypeRepository, ClubRepository clubRepository, DisciplineRepository disciplineRepository, AgeGroupRepository ageGroupRepository) {
         this.participantRepository = participantRepository;
         this.genderTypeRepository = genderTypeRepository;
         this.clubRepository = clubRepository;
-        this.disciplinRepository = disciplinRepository;
+        this.disciplineRepository = disciplineRepository;
         this.ageGroupRepository = ageGroupRepository;
     }
 
@@ -59,7 +59,7 @@ public class ParticipantService {
 
             // loop through the list of disciplines and add them to the participant
             dto.getDisciplines().forEach(discipline -> {
-                newParticipant.addDiscipline(disciplinRepository.findById(discipline.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot find discipline")));
+                newParticipant.addDiscipline(disciplineRepository.findById(discipline.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot find discipline")));
             });
 
             // save the participant
@@ -98,7 +98,7 @@ public class ParticipantService {
 
             // loop through the list of disciplines and add them to the participant
             dto.getDisciplines().forEach(discipline -> {
-                participant.addDiscipline(disciplinRepository.findById(discipline.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot find discipline")));
+                participant.addDiscipline(disciplineRepository.findById(discipline.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot find discipline")));
             });
 
             // save the participant
@@ -122,7 +122,7 @@ public class ParticipantService {
         try {
             Participant participant = participantRepository.findById(participantId).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot find participant"));
 
-            participant.addDiscipline(disciplinRepository.findById(disciplineId).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot find discipline")));
+            participant.addDiscipline(disciplineRepository.findById(disciplineId).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot find discipline")));
 
             participantRepository.save(participant);
         } catch (Exception e) {

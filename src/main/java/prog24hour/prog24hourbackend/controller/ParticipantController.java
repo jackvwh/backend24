@@ -17,7 +17,7 @@ public class ParticipantController {
     }
 
     @PostMapping
-    public ResponseEntity<ParticipantDto> createParticipant(ParticipantDto participantDto) {
+    public ResponseEntity<ParticipantDto> createParticipant(@RequestBody ParticipantDto participantDto) {
         return ResponseEntity.ok(participantService.createParticipant(participantDto));
     }
 
@@ -27,17 +27,17 @@ public class ParticipantController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ParticipantDto> getParticipant(Integer id) {
+    public ResponseEntity<ParticipantDto> getParticipant(@PathVariable Integer id) {
         return ResponseEntity.ok(participantService.getParticipant(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ParticipantDto> updateParticipant(Integer id, ParticipantDto participantDto) {
+    public ResponseEntity<ParticipantDto> updateParticipant(@PathVariable Integer id, @RequestBody ParticipantDto participantDto) {
         return ResponseEntity.ok(participantService.updateParticipant(id, participantDto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteParticipant(Integer id) {
+    public ResponseEntity<String> deleteParticipant(@PathVariable Integer id) {
         participantService.deleteParticipant(id);
         return ResponseEntity.ok("Participant deleted");
     }

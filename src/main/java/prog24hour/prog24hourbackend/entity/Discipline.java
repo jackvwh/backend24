@@ -21,11 +21,16 @@ public class Discipline {
 
     private String description;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "result_type_id")
+    private ResultType resultType;
+
     @ManyToMany(mappedBy = "disciplines")
     private Set<Participant> participants;
 
     public Discipline(DisciplineDto dto) {
         this.name = dto.getName();
         this.description = dto.getDescription();
+        this.resultType = new ResultType(dto.getResultType());
     }
 }
