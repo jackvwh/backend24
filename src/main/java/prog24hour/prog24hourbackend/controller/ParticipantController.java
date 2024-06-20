@@ -72,5 +72,4 @@ public class ParticipantController {
         resultService.deleteResult(id);
         return ResponseEntity.ok("Result deleted");
     }
-
 }

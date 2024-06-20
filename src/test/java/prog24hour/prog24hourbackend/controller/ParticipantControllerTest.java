@@ -70,6 +70,7 @@ class ParticipantControllerTest {
     @DisplayName("Should update participant successfully")
     @Test
     void updateParticipantSuccessfully() {
+
         ParticipantDto participantDto = new ParticipantDto();
         when(participantService.updateParticipant(anyInt(), any(ParticipantDto.class))).thenReturn(participantDto);
 
