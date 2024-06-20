@@ -59,13 +59,19 @@ public class SecurityConfig {
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/participant/{id}")).hasAuthority("ADMIN")
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/participant/{id}")).hasAuthority("ADMIN")
 
+            // add for result - extending the participant
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/participant/results/{disciplineId}")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/participant/{id}/results")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/participant/results")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/participant/results/{id}")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/participant/results/{id}")).hasAuthority("ADMIN")
+
             // add for disciplines
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/discipline")).hasAuthority("ADMIN")
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/discipline/{id}")).hasAuthority("ADMIN")
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/discipline")).hasAuthority("ADMIN")
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/discipline/{id}")).hasAuthority("ADMIN")
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/discipline/{id}")).hasAuthority("ADMIN")
-
 
             // add for users
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/auth/login")).permitAll()

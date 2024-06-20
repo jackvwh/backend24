@@ -30,7 +30,5 @@ public class Result {
     public Result(ResultDto dto) {
         this.resultDate = dto.getResultDate();
         this.resultValue = dto.getResultValue();
-        this.participant = new Participant(dto.getParticipant());
-        this.discipline = new Discipline(dto.getDiscipline());
     }
 }
