@@ -1,5 +1,7 @@
 package prog24hour.prog24hourbackend.security.config;
 
+import prog24hour.prog24hourbackend.security.error.CustomOAuth2AccessDeniedHandler;
+import prog24hour.prog24hourbackend.security.error.CustomOAuth2AuthenticationEntryPoint;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +23,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
-import prog24hour.prog24hourbackend.security.error.CustomOAuth2AccessDeniedHandler;
-import prog24hour.prog24hourbackend.security.error.CustomOAuth2AuthenticationEntryPoint;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -52,14 +52,16 @@ public class SecurityConfig {
                                       .accessDeniedHandler(new CustomOAuth2AccessDeniedHandler()));
     http.authorizeHttpRequests((authorize) -> authorize
 
-            //add for password token
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/password/token")).permitAll()
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/password/change")).permitAll()
+            // add for participant
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/participant")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/participant/{id}")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/participant")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/participant/{id}")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/participant/{id}")).hasAuthority("ADMIN")
 
             // add for users
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/auth/login")).permitAll()
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/user")).hasAuthority("ADMIN")// Only admins can create a user
-            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/recaptcha/verify")).permitAll()
 
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/user")).hasAuthority("ADMIN")
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/user/{id}")).hasAuthority("ADMIN")

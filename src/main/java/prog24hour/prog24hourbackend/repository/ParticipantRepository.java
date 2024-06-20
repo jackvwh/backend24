@@ -6,4 +6,5 @@ import prog24hour.prog24hourbackend.entity.Participant;
 
 @Repository
 public interface ParticipantRepository extends JpaRepository<Participant, Integer> {
+    boolean findByEmail(String email);
 }

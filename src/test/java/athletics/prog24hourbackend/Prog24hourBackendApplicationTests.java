@@ -1,4 +1,4 @@
-package prog24hour.prog24hourbackend;
+package athletics.prog24hourbackend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,12 +1,12 @@
 package prog24hour.prog24hourbackend.entity;
 
+import prog24hour.prog24hourbackend.dto.AddressDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import prog24hour.prog24hourbackend.dto.AddressDto;
 
 @Entity
 @Data
@@ -31,5 +31,4 @@ public class Address {
         this.zipCode = dto.getZipCode();
         this.country = dto.getCountry();
     }
-
 }

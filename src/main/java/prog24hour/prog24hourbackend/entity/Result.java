@@ -1,9 +1,9 @@
 package prog24hour.prog24hourbackend.entity;
 
+import prog24hour.prog24hourbackend.dto.ResultDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import prog24hour.prog24hourbackend.dto.ResultDto;
 
 import java.util.Date;
 
@@ -16,8 +16,8 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Date resultDate;
-    private Integer resultValue;
+    private String resultDate;
+    private float resultValue;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "participant_id")

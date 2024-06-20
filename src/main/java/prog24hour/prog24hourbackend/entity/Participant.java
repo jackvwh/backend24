@@ -1,10 +1,10 @@
 package prog24hour.prog24hourbackend.entity;
 
+import prog24hour.prog24hourbackend.dto.ParticipantDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import prog24hour.prog24hourbackend.dto.ParticipantDto;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -21,7 +21,7 @@ public class Participant extends BaseEntity{
 
     private String firstName;
     private String lastName;
-    private LocalDate birthDate;
+    private String birthDate;
     private String email;
     private String phone;
 
@@ -48,6 +48,14 @@ public class Participant extends BaseEntity{
         if (!disciplines.contains(discipline)) {
             disciplines.add(discipline);
         }
+    }
+
+    public void removeAllDisciplines() {
+        disciplines.clear();
+    }
+
+    public Integer getAge() {
+        return LocalDate.now().getYear() - LocalDate.parse(birthDate).getYear();
     }
 
     public Participant(ParticipantDto dto) {

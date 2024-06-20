@@ -5,9 +5,7 @@ import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import prog24hour.prog24hourbackend.entity.Result;
-
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -16,8 +14,8 @@ public class ResultDto implements Serializable {
 
     private Integer id;
 
-    private Date resultDate;
-    private Integer resultValue;
+    private String resultDate;
+    private float resultValue;
 
     @Valid
     private ParticipantDto participant;

@@ -5,7 +5,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import prog24hour.prog24hourbackend.entity.Address;
 import prog24hour.prog24hourbackend.entity.Club;
 
 import java.io.Serializable;

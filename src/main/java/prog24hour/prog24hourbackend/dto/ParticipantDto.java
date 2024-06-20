@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import prog24hour.prog24hourbackend.entity.Participant;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -27,7 +26,7 @@ public class ParticipantDto implements Serializable {
     private String lastName;
 
     @NotBlank(message = "Birth date is required")
-    private LocalDate birthDate;
+    private String birthDate;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Please provide a valid email address" )
@@ -36,7 +35,7 @@ public class ParticipantDto implements Serializable {
     @NotBlank(message = "Phone is required")
     @Pattern(regexp="(^$|[0-9]{8})",message = "Mobile number must be 8 digits")
     private String phone;
-
+    private AgeGroupDto ageGroup;
     private String gender;
 
     @Valid

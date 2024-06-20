@@ -22,6 +22,8 @@ public class DisciplineDto implements Serializable {
         @NotBlank(message = "Description is required")
         private String description;
 
+        private ResultTypeDto resultType;
+
         private Set<ParticipantDto> participants;
 
         public DisciplineDto(Discipline discipline) {
