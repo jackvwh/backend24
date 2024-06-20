@@ -6,10 +6,10 @@ import java.util.Set;
 
 @Data
 @Entity
-public class Disciplin {
+public class Discipline {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(unique = true)
@@ -17,6 +17,6 @@ public class Disciplin {
 
     private String description;
 
-    @OneToMany (mappedBy = "disciplin" , cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "disciplines")
     private Set<Participant> participants;
 }

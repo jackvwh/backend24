@@ -9,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import prog24hour.prog24hourbackend.entity.GenderType;
-import prog24hour.prog24hourbackend.entity.Participant;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -26,27 +25,13 @@ public class User extends BaseEntity implements UserDetails{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String firstName;
-    private String lastName;
-    private LocalDate birthDate;
     private String email;
-    private String phone;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "gender_type_id", referencedColumnName = "id")
-    private GenderType gender;
 
     //60 = length of a bcrypt encoded password
     @Column(nullable = false, length = 60)
 //    @NotBlank(message = "Password is required")
     @JsonIgnore
     private String password;
-
-    @OneToOne
-    @JoinTable(name = "user_participant",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "participant_id", referencedColumnName = "id"))
-    private Participant participant;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",

@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 public class Club extends BaseEntity{
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(unique = true)
