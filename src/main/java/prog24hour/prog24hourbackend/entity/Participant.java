@@ -3,6 +3,8 @@ package prog24hour.prog24hourbackend.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import prog24hour.prog24hourbackend.dto.ParticipantDto;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -10,6 +12,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
+@NoArgsConstructor
 public class Participant extends BaseEntity{
 
     @Id
@@ -40,6 +43,20 @@ public class Participant extends BaseEntity{
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "gender_type_id", referencedColumnName = "id")
     private GenderType gender;
+
+    public void addDiscipline(Discipline discipline) {
+        if (!disciplines.contains(discipline)) {
+            disciplines.add(discipline);
+        }
+    }
+
+    public Participant(ParticipantDto dto) {
+        this.firstName = dto.getFirstName();
+        this.lastName = dto.getLastName();
+        this.birthDate = dto.getBirthDate();
+        this.email = dto.getEmail();
+        this.phone = dto.getPhone();
+    }
 }
 
 

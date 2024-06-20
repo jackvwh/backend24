@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import prog24hour.prog24hourbackend.entity.Discipline;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -21,4 +23,11 @@ public class DisciplineDto implements Serializable {
         private String description;
 
         private Set<ParticipantDto> participants;
+
+        public DisciplineDto(Discipline discipline) {
+            this.id = discipline.getId();
+            this.name = discipline.getName();
+            this.description = discipline.getDescription();
+            this.participants = discipline.getParticipants().stream().map(ParticipantDto::new).collect(Collectors.toSet());
+        }
 }

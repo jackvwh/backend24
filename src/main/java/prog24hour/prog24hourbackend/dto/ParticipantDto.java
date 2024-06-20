@@ -1,15 +1,17 @@
 package prog24hour.prog24hourbackend.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import prog24hour.prog24hourbackend.entity.GenderType;
+import prog24hour.prog24hourbackend.entity.Participant;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -36,4 +38,19 @@ public class ParticipantDto implements Serializable {
     private String phone;
 
     private String gender;
+
+    @Valid
+    private ClubDto club;
+
+    @Valid
+    private Set<DisciplineDto> disciplines;
+
+    public ParticipantDto(Participant participant) {
+        this.id = participant.getId();
+        this.firstName = participant.getFirstName();
+        this.lastName = participant.getLastName();
+        this.birthDate = participant.getBirthDate();
+        this.email = participant.getEmail();
+        this.phone = participant.getPhone();
+    }
 }

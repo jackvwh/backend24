@@ -2,10 +2,14 @@ package prog24hour.prog24hourbackend.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import prog24hour.prog24hourbackend.dto.DisciplineDto;
+
 import java.util.Set;
 
 @Data
 @Entity
+@NoArgsConstructor
 public class Discipline {
 
     @Id
@@ -19,4 +23,9 @@ public class Discipline {
 
     @ManyToMany(mappedBy = "disciplines")
     private Set<Participant> participants;
+
+    public Discipline(DisciplineDto dto) {
+        this.name = dto.getName();
+        this.description = dto.getDescription();
+    }
 }
