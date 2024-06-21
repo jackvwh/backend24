@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -23,8 +21,8 @@ public class Result {
     @JoinColumn(name = "participant_id")
     private Participant participant;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "result_type_id", referencedColumnName = "id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "discipline_id", referencedColumnName = "id")
     private Discipline discipline;
 
     public Result(ResultDto dto) {

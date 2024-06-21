@@ -60,10 +60,17 @@ public class SecurityConfig {
 
             // add for result - extending the participant
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/participant/results/{disciplineId}")).hasAuthority("ADMIN")
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/participant/results")).hasAuthority("ADMIN")
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/participant/{id}/results")).hasAuthority("ADMIN")
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.POST, "/api/participant/results")).hasAuthority("ADMIN")
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.PUT, "/api/participant/results/{id}")).hasAuthority("ADMIN")
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.DELETE, "/api/participant/results/{id}")).hasAuthority("ADMIN")
+
+            // add for clubs
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/club")).hasAuthority("ADMIN")
+
+            // add for age groups
+            .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/age-group")).hasAuthority("ADMIN")
 
             // add for disciplines
             .requestMatchers(mvcMatcherBuilder.pattern(HttpMethod.GET, "/api/discipline")).hasAuthority("ADMIN")

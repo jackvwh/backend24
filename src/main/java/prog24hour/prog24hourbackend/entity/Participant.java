@@ -27,20 +27,20 @@ public class Participant extends BaseEntity{
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "participant_disciplin",
+            name = "participant_discipline",
             joinColumns = @JoinColumn(name = "participant_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "disciplin_id", referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name = "discipline_id", referencedColumnName = "id"))
     private Set<Discipline> disciplines;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "age_group_id", referencedColumnName = "id")
     private AgeGroup ageGroup;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "club_id", referencedColumnName = "id")
     private Club club;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "gender_type_id", referencedColumnName = "id")
     private GenderType gender;
 

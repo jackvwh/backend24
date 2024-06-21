@@ -52,6 +52,11 @@ public class ParticipantController {
         return ResponseEntity.ok(resultService.getResultsByParticipant(id));
     }
 
+    @GetMapping("/results")
+    public ResponseEntity<Iterable<ResultDto>> getResults() {
+        return ResponseEntity.ok(resultService.getAllResults());
+    }
+
     @GetMapping("/results/{disciplineId}")
     public ResponseEntity<Iterable<ResultDto>> getResultsForDiscipline(@PathVariable Integer disciplineId) {
         return ResponseEntity.ok(resultService.getResultsByDiscipline(disciplineId));

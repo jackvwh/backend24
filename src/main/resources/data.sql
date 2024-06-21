@@ -47,3 +47,38 @@ INSERT INTO age_group (name, min_age, max_age) VALUES ('YOUTH', 10, 14);
 INSERT INTO age_group (name, min_age, max_age) VALUES ('JUNIOR', 14, 22);
 INSERT INTO age_group (name, min_age, max_age) VALUES ('ADULT', 23, 40);
 INSERT INTO age_group (name, min_age, max_age) VALUES ('SENIOR', 41, 150);
+
+-- Inserting participant 1 with relation to discipline 1 and 2
+INSERT INTO participant (first_name, last_name, birth_date, gender_type_id, club_id) VALUES ('John', 'Doe', '1980-01-01', (SELECT id FROM gender_type WHERE name = 'MALE'), (SELECT id FROM club WHERE name = 'New York Athletics Club'));
+INSERT INTO participant_discipline (participant_id, discipline_id) VALUES ((SELECT id FROM participant WHERE first_name = 'John' AND last_name = 'Doe'), (SELECT id FROM discipline WHERE name = '100m Sprint'));
+INSERT INTO participant_discipline (participant_id, discipline_id) VALUES ((SELECT id FROM participant WHERE first_name = 'John' AND last_name = 'Doe'), (SELECT id FROM discipline WHERE name = 'Marathon'));
+
+-- Inserting participant 2 with relation to discipline 3
+INSERT INTO participant (first_name, last_name, birth_date, gender_type_id, club_id) VALUES ('Jane', 'Doe', '1985-02-02', (SELECT id FROM gender_type WHERE name = 'FEMALE'), (SELECT id FROM club WHERE name = 'Los Angeles Runners Club'));
+INSERT INTO participant_discipline (participant_id, discipline_id) VALUES ((SELECT id FROM participant WHERE first_name = 'Jane' AND last_name = 'Doe'), (SELECT id FROM discipline WHERE name = 'High Jump'));
+
+-- Inserting participant 3 with relation to discipline 4 and 5
+INSERT INTO participant (first_name, last_name, birth_date, gender_type_id, club_id) VALUES ('Bob', 'Smith', '1990-03-03', (SELECT id FROM gender_type WHERE name = 'MALE'), (SELECT id FROM club WHERE name = 'Chicago Sprinters Club'));
+INSERT INTO participant_discipline (participant_id, discipline_id) VALUES ((SELECT id FROM participant WHERE first_name = 'Bob' AND last_name = 'Smith'), (SELECT id FROM discipline WHERE name = 'Pole Vault'));
+INSERT INTO participant_discipline (participant_id, discipline_id) VALUES ((SELECT id FROM participant WHERE first_name = 'Bob' AND last_name = 'Smith'), (SELECT id FROM discipline WHERE name = 'Long Jump'));
+
+-- Inserting participant 4 with relation to discipline 6
+INSERT INTO participant (first_name, last_name, birth_date, gender_type_id, club_id) VALUES ('Alice', 'Johnson', '1995-04-04', (SELECT id FROM gender_type WHERE name = 'FEMALE'), (SELECT id FROM club WHERE name = 'Houston Marathon Club'));
+INSERT INTO participant_discipline (participant_id, discipline_id) VALUES ((SELECT id FROM participant WHERE first_name = 'Alice' AND last_name = 'Johnson'), (SELECT id FROM discipline WHERE name = 'Triple Jump'));
+
+-- Inserting participant 5 with relation to discipline 7 and 8
+INSERT INTO participant (first_name, last_name, birth_date, gender_type_id, club_id) VALUES ('Charlie', 'Brown', '2000-05-05', (SELECT id FROM gender_type WHERE name = 'MALE'), (SELECT id FROM club WHERE name = 'Phoenix Jumpers Club'));
+INSERT INTO participant_discipline (participant_id, discipline_id) VALUES ((SELECT id FROM participant WHERE first_name = 'Charlie' AND last_name = 'Brown'), (SELECT id FROM discipline WHERE name = 'Shot Put'));
+INSERT INTO participant_discipline (participant_id, discipline_id) VALUES ((SELECT id FROM participant WHERE first_name = 'Charlie' AND last_name = 'Brown'), (SELECT id FROM discipline WHERE name = 'Discus Throw'));
+
+-- Inserting result 1 for participant 1
+INSERT INTO result (result_date, result_value, participant_id, discipline_id) VALUES ('2022-01-01', 10.5, (SELECT id FROM participant WHERE first_name = 'John' AND last_name = 'Doe'), (SELECT id FROM discipline WHERE name = '100m Sprint'));
+
+-- Inserting result 2 for participant 1
+INSERT INTO result (result_date, result_value, participant_id, discipline_id) VALUES ('2022-02-01', 2.5, (SELECT id FROM participant WHERE first_name = 'John' AND last_name = 'Doe'), (SELECT id FROM discipline WHERE name = 'Marathon'));
+
+-- Inserting result 1 for participant 2
+INSERT INTO result (result_date, result_value, participant_id, discipline_id) VALUES ('2022-03-01', 1.75, (SELECT id FROM participant WHERE first_name = 'Jane' AND last_name = 'Doe'), (SELECT id FROM discipline WHERE name = 'High Jump'));
+
+-- Inserting result 2 for participant 2
+INSERT INTO result (result_date, result_value, participant_id, discipline_id) VALUES ('2022-04-01', 5.5, (SELECT id FROM participant WHERE first_name = 'Jane' AND last_name = 'Doe'), (SELECT id FROM discipline WHERE name = 'Triple Jump'));

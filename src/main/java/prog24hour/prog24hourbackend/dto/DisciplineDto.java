@@ -8,7 +8,6 @@ import prog24hour.prog24hourbackend.entity.Discipline;
 
 import java.io.Serializable;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -30,6 +29,5 @@ public class DisciplineDto implements Serializable {
             this.id = discipline.getId();
             this.name = discipline.getName();
             this.description = discipline.getDescription();
-            this.participants = discipline.getParticipants().stream().map(ParticipantDto::new).collect(Collectors.toSet());
         }
 }

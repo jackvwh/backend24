@@ -84,4 +84,13 @@ public class ResultService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error while deleting result");
         }
     }
+
+    public List<ResultDto> getAllResults() {
+        try {
+            List<Result> results = resultRepository.findAll();
+            return results.stream().map(ResultDto::new).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error while fetching results");
+        }
+    }
 }
